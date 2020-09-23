@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.choimuhtadin.newsapp.di.scope.FragmentKey
 import com.choimuhtadin.newsapp.di.module.factory.InjectingFragmentFactory
 import com.choimuhtadin.newsapp.ui.main.MainFragment
+import com.choimuhtadin.newsapp.ui.splash.SplashFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -12,11 +13,11 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class FragmentBindingModule {
 
-//    @Binds
-//    @IntoMap
-//    @FragmentKey(SplashFragment::class)
-//    abstract fun bindSplashFragment(splashFragment: SplashFragment): Fragment
-//
+    @Binds
+    @IntoMap
+    @FragmentKey(SplashFragment::class)
+    abstract fun bindSplashFragment(splashFragment: SplashFragment): Fragment
+
     @Binds
     @IntoMap
     @FragmentKey(MainFragment::class)

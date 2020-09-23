@@ -3,4 +3,11 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="c_white">#FFF</color>
+    <color name="c_white_op80">#80FFFFFF</color>
+
+    <color name="c_bg_offline">#E6E6E6</color>
+    <color name="c_black_op30">#4D000000</color>
+    <color name="c_black_op10">#1A000000</color>
+    <color name="c_black_op80">#CC000000</color>
 </resources>
