@@ -51,6 +51,7 @@ android {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -119,5 +120,6 @@ dependencies {
 
     implementation "com.android.support:multidex:$multidexVersion"
 
+    implementation 'com.github.Ferfalk:SimpleSearchView:0.1.6'
 
 }

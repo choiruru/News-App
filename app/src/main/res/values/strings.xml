@@ -6,4 +6,5 @@
 
     <string name="empty_message">Oops…\nlooks like the one you\'re looking for doesn\'t exist</string>
     <string name="search_sources">Search Sources</string>
+    <string name="search">Search</string>
 </resources>

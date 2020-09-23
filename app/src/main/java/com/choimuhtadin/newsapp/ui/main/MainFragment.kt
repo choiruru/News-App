@@ -3,21 +3,24 @@ package com.choimuhtadin.newsapp.ui.main
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigator
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.choimuhtadin.newsapp.R
 import com.choimuhtadin.newsapp.data.remote.model.Article
-import com.choimuhtadin.newsapp.data.remote.model.Source
 import com.choimuhtadin.newsapp.databinding.FragmentMainBinding
 import com.choimuhtadin.newsapp.ui.MainActivity
 import com.choimuhtadin.newsapp.ui.base.BaseFragment
 import com.choimuhtadin.newsapp.utils.OnScrollListener
+import com.ferfalk.simplesearchview.SimpleSearchView
 import javax.inject.Inject
+
 
 class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, MainViewModel>(),
     MenuAdapter.OnMenuItemClickListener{
@@ -50,13 +53,38 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
     }
 
     private fun initToolbar(){
-        (activity as MainActivity).setSupportActionBar(binding.content.toolbar)
         binding.content.toolbar.setNavigationOnClickListener(View.OnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         })
+        binding.content.searchView.setMenuItem(binding.content.toolbar.menu.getItem(0))
         viewModel.source.observe(this, Observer {
             binding.content.toolbar.title = it.name
         })
+
+        binding.content.searchView.setOnQueryTextListener(object : SimpleSearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    viewModel.searchArticles(it)
+                    onScrollListener.reset()
+                }
+                return true;
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    viewModel.searchArticles(it)
+                    onScrollListener.reset()
+                }
+                return true;
+            }
+
+            override fun onQueryTextCleared(): Boolean {
+                viewModel.searchArticles("")
+                onScrollListener.reset()
+                return true;
+            }
+        })
+
     }
 
     private fun initArticleRecyclerview(){
@@ -64,7 +92,7 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
             viewModel.loadMore()
         }
 
-        articleAdapter = ArticleAdapter(object : ArticleAdapter.OnArticleItemClickListener{
+        articleAdapter = ArticleAdapter(object : ArticleAdapter.OnArticleItemClickListener {
             override fun onClick(article: Article) {
 //                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(
 //                    article.url
@@ -81,7 +109,7 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
         binding.content.recyclerview.addOnScrollListener(onScrollListener)
 
         viewModel.article.observe(this, Observer {
-            Log.d(TAG, "size: "+it.size);
+            Log.d(TAG, "size: " + it.size);
             articleAdapter.submitList(it)
         })
     }
@@ -92,13 +120,12 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
 
         viewModel.sources.observe(this, Observer {
             adapter.submitList(it)
-            if(!isFragmentFromPaused){
+            if (!isFragmentFromPaused) {
                 viewModel.loadNews(0)
             }
         })
 
-        binding.edtSearchSources.addTextChangedListener {
-            text: Editable? ->
+        binding.edtSearchSources.addTextChangedListener { text: Editable? ->
             viewModel.filterSources(text.toString())
         }
     }

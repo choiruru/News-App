@@ -15,6 +15,7 @@ interface NewsApi {
 
     @GET("everything")
     fun getNews(
+        @Query("q") query:String,
         @Query("sources") idSource:String,
         @Query("apiKey") apiKey:String,
         @Query("pageSize") pageSize:String,

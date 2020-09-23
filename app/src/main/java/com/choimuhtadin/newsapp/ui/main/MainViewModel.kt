@@ -39,6 +39,7 @@ class MainViewModel @Inject constructor(
 
     private var page:Int=1
     private var totalResults = 0
+    private var query=""
 
     fun loadSources(){
         networkState(NetworkState.LOADING)
@@ -82,6 +83,11 @@ class MainViewModel @Inject constructor(
         getNews()
     }
 
+    fun searchArticles(query:String){
+        this.query = query
+        retry()
+    }
+
     fun loadMore(){
         page++
         getNews()
@@ -89,7 +95,8 @@ class MainViewModel @Inject constructor(
 
     private fun getNews(){
         source.value?.let { it ->
-            lastDisposable = newsRepository.getNews(it.id , page.toString())
+            lastDisposable?.dispose()
+            lastDisposable = newsRepository.getNews(query, it.id , page.toString())
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
                 .subscribe({ models ->

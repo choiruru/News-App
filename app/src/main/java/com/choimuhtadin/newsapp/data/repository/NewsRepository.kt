@@ -8,7 +8,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 interface NewsRepository {
-    fun getNews(idSource:String,
+    fun getNews(query:String,
+                idSource:String,
                 page:String): Single<News>
 }
 
@@ -17,10 +18,11 @@ class NewsRepositoryImpl @Inject constructor(
 ): NewsRepository, BaseRepository() {
 
     override fun getNews(
+        query:String,
         idSource: String,
         page: String
     ): Single<News> {
-        return composeSingle { service.getNews(idSource, BuildConfig.API_KEY, "10", page) }
+        return composeSingle { service.getNews(query, idSource, BuildConfig.API_KEY, "10", page) }
             .compose(ErrorNetworkHandler())
     }
 
