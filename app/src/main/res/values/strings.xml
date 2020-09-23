@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NewsApp</string>
+
+    <string name="oops">Oops..!</string>
+    <string name="retry">Retry</string>
+
+    <string name="empty_message">Oops…\nlooks like the one you\'re looking for doesn\'t exist</string>
+    <string name="search_sources">Search Sources</string>
 </resources>

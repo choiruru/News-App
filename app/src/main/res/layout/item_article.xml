@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="article"
+            type="com.choimuhtadin.newsapp.data.remote.model.Article" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <FrameLayout
+            android:id="@+id/lytMenuParent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:orientation="horizontal"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                imgUrl="@{article.urlToImage}"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:background="@color/c_black_op80"
+                android:text="@{article.title}"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:layout_gravity="bottom"
+                android:textColor="@color/c_white"/>
+
+        </FrameLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

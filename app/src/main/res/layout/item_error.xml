@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="network"
+            type="String" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:background="@color/c_bg_offline">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/img_graveyard"
+            android:layout_marginBottom="24dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/oops"
+            android:textSize="36sp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/txtErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@{network}"/>
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/retry"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/btn_round"/>
+
+    </LinearLayout>
+</layout>
