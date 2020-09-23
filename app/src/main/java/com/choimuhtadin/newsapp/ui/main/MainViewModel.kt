@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.choimuhtadin.newsapp.data.remote.helper.DataStatus
 import com.choimuhtadin.newsapp.data.remote.helper.NetworkState
 import com.choimuhtadin.newsapp.data.remote.model.Source
@@ -23,6 +24,7 @@ class MainViewModel @Inject constructor(
 
     private val TAG = "MainViewModel"
 
+    private val _sourcesFull = MutableLiveData<List<Source>>()
     private val _sources = MutableLiveData<List<Source>>()
     val sources: LiveData<List<Source>> get() = _sources
 
@@ -39,11 +41,14 @@ class MainViewModel @Inject constructor(
     private var totalResults = 0
 
     fun loadSources(){
+        networkState(NetworkState.LOADING)
         lastDisposable = sourcesRepository.getSources()
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
-            .subscribe({ sources ->
-                _sources.postValue(sources.sources)
+            .subscribe({ data ->
+                _sourcesFull.postValue(data.sources)
+                _sources.postValue(data.sources)
+                networkState(NetworkState.LOADED)
             },{
                 handleError(it)
             })
@@ -51,9 +56,23 @@ class MainViewModel @Inject constructor(
         lastDisposable?.let { compositeDisposable.add(it) }
     }
 
-    fun loadNews(source:Source){
-        _source.value = source
-        retry()
+    fun filterSources(query:String){
+       query.let {
+           Log.d("OKOKOKO", it)
+           val data = _sourcesFull.value?.filter { item -> item.name.toLowerCase().contains(query.toLowerCase()) }
+           _sources.postValue(data)
+       }
+    }
+
+    fun loadNews(index:Int){
+        sources.value?.let {
+            if(it.isNotEmpty()){
+                _source.value = it[index]
+                retry()
+            }else{
+                _dataStatus.postValue(DataStatus.EMPTY)
+            }
+        }
     }
 
     fun retry(){

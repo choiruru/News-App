@@ -1,9 +1,11 @@
 package com.choimuhtadin.newsapp.ui.main
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.View
 import androidx.core.view.GravityCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
@@ -23,7 +25,6 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
     private val TAG = "MainFragment"
     private lateinit var adapter:MenuAdapter
     private lateinit var articleAdapter : ArticleAdapter
-
     private lateinit var onScrollListener: OnScrollListener
 
     override fun getViewModelClass(): Class<MainViewModel> {
@@ -92,16 +93,21 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
         viewModel.sources.observe(this, Observer {
             adapter.submitList(it)
             if(!isFragmentFromPaused){
-                viewModel.loadNews(it[0])
+                viewModel.loadNews(0)
             }
         })
+
+        binding.edtSearchSources.addTextChangedListener {
+            text: Editable? ->
+            viewModel.filterSources(text.toString())
+        }
     }
 
-    override fun onClick(source: Source) {
+    override fun onClick(index: Int) {
         binding.drawerLayout.closeDrawer(GravityCompat.START)
 
         onScrollListener.reset()
-        viewModel.loadNews(source)
+        viewModel.loadNews(index)
     }
 
     private fun initErrorView(){

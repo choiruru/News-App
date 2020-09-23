@@ -40,7 +40,7 @@ class MenuAdapter @Inject constructor(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val vHolder = holder as UserViewHolder
         vHolder.binding.lytMenuParent.setOnClickListener {
-            clickListener.onClick(getItem(position))
+            clickListener.onClick(position)
         }
         vHolder.bind(getItem(position))
     }
@@ -53,7 +53,7 @@ class MenuAdapter @Inject constructor(
     }
 
     interface OnMenuItemClickListener {
-        fun onClick(country: Source)
+        fun onClick(index: Int)
     }
 }
 
