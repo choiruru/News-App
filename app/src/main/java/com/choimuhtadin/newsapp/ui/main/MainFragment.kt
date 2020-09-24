@@ -3,19 +3,16 @@ package com.choimuhtadin.newsapp.ui.main
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.choimuhtadin.newsapp.R
 import com.choimuhtadin.newsapp.data.remote.model.Article
 import com.choimuhtadin.newsapp.databinding.FragmentMainBinding
-import com.choimuhtadin.newsapp.ui.MainActivity
 import com.choimuhtadin.newsapp.ui.base.BaseFragment
 import com.choimuhtadin.newsapp.utils.OnScrollListener
 import com.ferfalk.simplesearchview.SimpleSearchView
@@ -39,17 +36,28 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
     }
 
     override fun onViewReady(savedInstance: Bundle?) {
+        Log.d(TAG, ": onViewReady");
 
         binding.viewModel = viewModel
 
         initToolbar()
-        initMenuRecyclerview()
+        initMenuRecyclerview(savedInstance)
         initArticleRecyclerview()
         initErrorView()
 
-        if(!isFragmentFromPaused){
+        if(!viewModel.isFromPause()){
             viewModel.loadSources()
         }
+    }
+
+    override fun onPause() {
+        viewModel.setPause(true);
+        super.onPause()
+    }
+
+    override fun onResume() {
+        viewModel.setPause(false);
+        super.onResume()
     }
 
     private fun initToolbar(){
@@ -67,21 +75,23 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
                     viewModel.searchArticles(it)
                     onScrollListener.reset()
                 }
-                return true;
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    viewModel.searchArticles(it)
-                    onScrollListener.reset()
+                if(!viewModel.isFromPause()){
+                    newText?.let {
+                        viewModel.searchArticles(it)
+                        onScrollListener.reset()
+                    }
+                    return true
+                }else{
+                    return false
                 }
-                return true;
             }
 
             override fun onQueryTextCleared(): Boolean {
-                viewModel.searchArticles("")
-                onScrollListener.reset()
-                return true;
+                return false
             }
         })
 
@@ -94,39 +104,40 @@ class MainFragment @Inject constructor() : BaseFragment<FragmentMainBinding, Mai
 
         articleAdapter = ArticleAdapter(object : ArticleAdapter.OnArticleItemClickListener {
             override fun onClick(article: Article) {
-//                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(
-//                    article.url
-//                )
-//                findNavController()
-//                    .navigate(
-//                        action,
-//                        FragmentNavigator.Extras.Builder()
-//                            .build()
-//                    )
+                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(
+                    article.url
+                )
+                findNavController()
+                    .navigate(
+                        action,
+                        FragmentNavigator.Extras.Builder()
+                            .build()
+                    )
             }
         })
         binding.content.recyclerview.adapter = articleAdapter
         binding.content.recyclerview.addOnScrollListener(onScrollListener)
 
         viewModel.article.observe(this, Observer {
-            Log.d(TAG, "size: " + it.size);
             articleAdapter.submitList(it)
         })
     }
 
-    private fun initMenuRecyclerview() {
+    private fun initMenuRecyclerview(savedInstance: Bundle?) {
         adapter = MenuAdapter(this)
         binding.rcMenu.adapter = adapter
 
         viewModel.sources.observe(this, Observer {
             adapter.submitList(it)
-            if (!isFragmentFromPaused) {
+            if(!viewModel.isFromPause()){
                 viewModel.loadNews(0)
             }
         })
 
         binding.edtSearchSources.addTextChangedListener { text: Editable? ->
-            viewModel.filterSources(text.toString())
+            if(!viewModel.isFromPause()){
+                viewModel.filterSources(text.toString())
+            }
         }
     }
 

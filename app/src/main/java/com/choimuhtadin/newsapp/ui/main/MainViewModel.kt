@@ -40,8 +40,13 @@ class MainViewModel @Inject constructor(
     private var page:Int=1
     private var totalResults = 0
     private var query=""
+    private var onPause=false;
 
     fun loadSources(){
+        _sourcesFull.value?.run {
+            return
+        }
+
         networkState(NetworkState.LOADING)
         lastDisposable = sourcesRepository.getSources()
             .subscribeOn(schedulers.io())
@@ -59,7 +64,6 @@ class MainViewModel @Inject constructor(
 
     fun filterSources(query:String){
        query.let {
-           Log.d("OKOKOKO", it)
            val data = _sourcesFull.value?.filter { item -> item.name.toLowerCase().contains(query.toLowerCase()) }
            _sources.postValue(data)
        }
@@ -125,6 +129,14 @@ class MainViewModel @Inject constructor(
 
             lastDisposable?.let { compositeDisposable.add(it) }
         }
+    }
+
+    fun setPause(state:Boolean){
+        this.onPause=state
+    }
+
+    fun isFromPause():Boolean{
+        return onPause
     }
 
 }

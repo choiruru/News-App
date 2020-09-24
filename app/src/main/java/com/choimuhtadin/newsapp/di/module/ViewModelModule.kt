@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.choimuhtadin.newsapp.di.scope.ApplicationScope
 import com.choimuhtadin.newsapp.di.scope.ViewModelKey
 import com.choimuhtadin.newsapp.di.module.factory.ViewModelFactory
+import com.choimuhtadin.newsapp.ui.detail.DetailViewModel
 import com.choimuhtadin.newsapp.ui.main.MainViewModel
 import com.choimuhtadin.newsapp.ui.splash.SplashViewModel
 import dagger.Binds
@@ -27,10 +28,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     internal abstract fun providesMainViewModel(viewModel: MainViewModel) : ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(DetailViewModel::class)
-//    internal abstract fun providesDetailViewModel(viewModel: DetailViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DetailViewModel::class)
+    internal abstract fun providesDetailViewModel(viewModel: DetailViewModel) : ViewModel
 
 }

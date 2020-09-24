@@ -24,9 +24,6 @@ abstract class BaseFragment<B : ViewDataBinding, V : ViewModel> : Fragment() {
     val binding: B get() = mViewDataBinding
     val viewModel: V get() = mViewModel
 
-    private var _isFragmentFromPaused:Boolean = false
-    val isFragmentFromPaused : Boolean get() = _isFragmentFromPaused
-
     protected abstract fun getViewModelClass(): Class<V>
 
     @LayoutRes
@@ -34,16 +31,8 @@ abstract class BaseFragment<B : ViewDataBinding, V : ViewModel> : Fragment() {
 
     protected abstract fun onViewReady(savedInstance: Bundle?)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        Log.d(TAG, "onActivityCreated: ");
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: ");
-
         mViewModel = ViewModelProvider(this, viewModelFactory).get(getViewModelClass())
     }
 
@@ -65,16 +54,6 @@ abstract class BaseFragment<B : ViewDataBinding, V : ViewModel> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onViewReady(savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        _isFragmentFromPaused = false
-    }
-
-    override fun onPause() {
-        super.onPause()
-        _isFragmentFromPaused = true
     }
 
     fun waitForTransition(view:View){
